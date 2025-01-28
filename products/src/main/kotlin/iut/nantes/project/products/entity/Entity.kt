@@ -20,13 +20,16 @@ data class Product(
     val id: UUID = UUID.randomUUID(),
     val name: String,
     val description: String?,
+    @ManyToOne(cascade = [CascadeType.ALL])
     val price: Price,
+    @ManyToOne  (cascade = [CascadeType.ALL])
     val family: Family
 )
 
 @Entity
 @Table(name = "price")
 data class Price(
+    @Id
     val amount: Double,
     val currency: String
 )
