@@ -1,4 +1,4 @@
-package iut.nantes.project.stores.Controller
+package iut.nantes.project.stores.dto
 
 data class StoreDto(val id: Int?, val name: String, val contact: ContactDto, val products: List<ProductDto>)
 
