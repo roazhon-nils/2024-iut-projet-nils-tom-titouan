@@ -21,9 +21,8 @@ class FamilyService(private val familyRepository: FamilyRepositoryCustom) {
     }
 
     fun getFamilyById(id: UUID): FamilyDTO {
-        val family = familyRepository.findById(id)
-            .orElseThrow { FamilyException.FamilyNotFoundException() }
-        return family.toDto()
+        return familyRepository.findById(id)
+            .orElseThrow { FamilyException.FamilyNotFoundException() }.toDto()
     }
 
     fun updateFamily(id: UUID, familyDto: FamilyDTO): FamilyDTO {

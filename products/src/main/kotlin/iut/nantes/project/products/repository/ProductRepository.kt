@@ -1,7 +1,6 @@
 package iut.nantes.project.products.repository
 
 import ProductEntity
-import iut.nantes.project.products.dto.ProductDto
 import org.springframework.data.jpa.repository.JpaRepository
 import java.util.*
 
@@ -10,7 +9,7 @@ interface ProductRepositoryCustom {
     fun findById(id: String): Optional<ProductEntity>
     fun findAll(): List<ProductEntity>
     fun existsByName(name: String): Boolean
-    fun delete(product: ProductEntity)
+    fun delete(id: UUID)
 }
 
 interface ProductJpaRepository : JpaRepository<ProductEntity, UUID> {

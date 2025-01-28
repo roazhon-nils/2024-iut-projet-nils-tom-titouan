@@ -1,4 +1,6 @@
 import iut.nantes.project.products.dto.FamilyDTO
+import iut.nantes.project.products.dto.PriceDto
+import iut.nantes.project.products.dto.ProductDto
 import jakarta.persistence.*
 import org.springframework.data.jpa.repository.JpaRepository
 import java.util.*
@@ -27,17 +29,21 @@ data class ProductEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     val id: UUID = UUID.randomUUID(),
-    val name: String,
-    val description: String?,
+    var name: String,
+    var description: String,
     @Embedded
-    val price: Price,
+    var price: PriceEntity,
     @ManyToOne  (cascade = [CascadeType.ALL])
-    val family: FamilyEntity
-)
+    var family: FamilyEntity
+)  {
+    fun toDto() = ProductDto(id, name, description, price.toDto(), family.toDto())
+}
 
 @Embeddable
 @Table(name = "price")
-data class Price(
+data class PriceEntity(
     val amount: Double,
     val currency: String
-)
+) {
+    fun toDto() = PriceDto(amount.toInt(), currency)
+}
