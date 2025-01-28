@@ -33,6 +33,10 @@ dependencies {
     testImplementation("com.ninja-squad:springmockk:4.0.2")
 
 	implementation("io.github.oshai:kotlin-logging-jvm:7.0.3")
+	implementation("jakarta.persistence:jakarta.persistence-api:3.1.0")
+	implementation("org.hibernate.orm:hibernate-core:6.2.5.Final")
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	implementation("com.h2database:h2:2.2.222")
 }
 
 kotlin {
