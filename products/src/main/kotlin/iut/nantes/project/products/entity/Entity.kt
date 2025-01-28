@@ -1,9 +1,12 @@
 import jakarta.persistence.*
+import org.springframework.data.jpa.repository.JpaRepository
 import java.util.*
 
+interface FamilyJpa :
+    JpaRepository<FamilyEntity, UUID>
 
 @Entity
-@Table(name = "familly")
+@Table(name = "family")
 data class FamilyEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -12,9 +15,12 @@ data class FamilyEntity(
     val description: String
 )
 
+interface ProductJpa :
+    JpaRepository<ProductEntity, UUID>
+
 @Entity
 @Table(name = "product")
-data class Product(
+data class ProductEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     val id: UUID = UUID.randomUUID(),
