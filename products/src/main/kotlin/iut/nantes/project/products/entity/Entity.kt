@@ -4,7 +4,7 @@ import java.util.*
 
 @Entity
 @Table(name = "familly")
-data class Family(
+data class FamilyEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     val id: UUID = UUID.randomUUID(),
@@ -23,7 +23,7 @@ data class Product(
     @Embedded
     val price: Price,
     @ManyToOne  (cascade = [CascadeType.ALL])
-    val family: Family
+    val family: FamilyEntity
 )
 
 @Embeddable
