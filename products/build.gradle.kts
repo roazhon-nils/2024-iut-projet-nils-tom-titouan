@@ -35,6 +35,7 @@ dependencies {
 	testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.28.1")
     testImplementation("io.mockk:mockk:1.13.12")
     testImplementation("com.ninja-squad:springmockk:4.0.2")
+	testImplementation("org.junit.jupiter:junit-jupiter")
 
 	implementation("io.github.oshai:kotlin-logging-jvm:7.0.3")
 	implementation("jakarta.persistence:jakarta.persistence-api:3.1.0")
