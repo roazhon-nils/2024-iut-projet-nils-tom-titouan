@@ -1,5 +1,4 @@
-package iut.nantes.project.products.Exception
-
+package iut.nantes.project.products.exception
 
 sealed class FamilyException(message: String) : RuntimeException(message) {
     class InvalidDataException(message: String = "Les données fournies sont invalides.") : FamilyException(message)

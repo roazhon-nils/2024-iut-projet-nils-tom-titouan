@@ -1,6 +1,6 @@
 package iut.nantes.project.products.dto
 
-import FamilyEntity
+import iut.nantes.project.products.entity.FamilyEntity
 import jakarta.validation.constraints.Size
 import java.util.*
 

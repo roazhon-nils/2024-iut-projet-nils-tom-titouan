@@ -1,7 +1,7 @@
 package iut.nantes.project.products.dto
 
-import PriceEntity
-import ProductEntity
+import iut.nantes.project.products.entity.PriceEntity
+import iut.nantes.project.products.entity.ProductEntity
 import java.util.*
 
 data class ProductDto(

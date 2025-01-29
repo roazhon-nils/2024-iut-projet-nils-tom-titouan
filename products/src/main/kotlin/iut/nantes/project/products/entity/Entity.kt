@@ -1,3 +1,5 @@
+package iut.nantes.project.products.entity
+
 import iut.nantes.project.products.dto.FamilyDTO
 import iut.nantes.project.products.dto.PriceDto
 import iut.nantes.project.products.dto.ProductDto
@@ -9,16 +11,21 @@ interface FamilyJpa :
     JpaRepository<FamilyEntity, UUID>
 
 @Entity
-@Table(name = "family")
+@Table(name = "families")
 data class FamilyEntity(
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.UUID)
     val id: UUID = UUID.randomUUID(),
+    
+    @Column(nullable = false, unique = true)
     var name: String,
-    var description: String
+    
+    @Column
+    var description: String = ""
 ) {
     fun toDto() = FamilyDTO(id, name, description)
 }
+
 
 interface ProductJpa :
     JpaRepository<ProductEntity, UUID>

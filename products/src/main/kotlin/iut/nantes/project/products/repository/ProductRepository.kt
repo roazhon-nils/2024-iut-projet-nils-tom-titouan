@@ -1,8 +1,9 @@
 package iut.nantes.project.products.repository
 
-import ProductEntity
+import iut.nantes.project.products.entity.ProductEntity
 import org.springframework.context.annotation.Profile
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.stereotype.Repository
 import java.util.*
 
 interface ProductRepositoryCustom {
@@ -18,6 +19,7 @@ interface ProductJpaRepository : JpaRepository<ProductEntity, UUID> {
 }
 
 @Profile("!dev")
+@Repository
 class ProductRepositoryJPA(private val productJpaRepository: ProductJpaRepository) : ProductRepositoryCustom {
     override fun save(productEntity: ProductEntity) {
         productJpaRepository.save(productEntity)
@@ -41,6 +43,7 @@ class ProductRepositoryJPA(private val productJpaRepository: ProductJpaRepositor
 }
 
 @Profile("dev")
+@Repository
 class ProductRepositoryInMemory : ProductRepositoryCustom {
     private val products = mutableMapOf<UUID, ProductEntity>()
     override fun save(productEntity: ProductEntity) {

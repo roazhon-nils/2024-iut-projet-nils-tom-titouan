@@ -1,4 +1,3 @@
-
 package iut.nantes.project.products.exception
 
 sealed class ProductException(message: String) : RuntimeException(message) {

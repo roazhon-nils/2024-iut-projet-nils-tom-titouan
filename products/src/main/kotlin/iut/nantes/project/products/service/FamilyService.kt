@@ -1,11 +1,13 @@
 package iut.nantes.project.products.service
 
-import FamilyEntity
-import iut.nantes.project.products.Exception.FamilyException
+import iut.nantes.project.products.entity.FamilyEntity
+import iut.nantes.project.products.exception.FamilyException
 import iut.nantes.project.products.dto.FamilyDTO
 import iut.nantes.project.products.repository.FamilyRepositoryCustom
+import org.springframework.stereotype.Service
 import java.util.*
 
+@Service
 class FamilyService(private val familyRepository: FamilyRepositoryCustom) {
     fun createFamily(familyDto: FamilyDTO): FamilyDTO {
         if (familyRepository.existsByName(familyDto.name)) {

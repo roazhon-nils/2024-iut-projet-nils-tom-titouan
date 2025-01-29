@@ -1,8 +1,9 @@
 package iut.nantes.project.products.repository
 
-import FamilyEntity
+import iut.nantes.project.products.entity.FamilyEntity
 import org.springframework.context.annotation.Profile
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.stereotype.Repository
 import java.util.*
 
 interface FamilyRepositoryCustom {
@@ -18,9 +19,11 @@ interface FamilyJpaRepository : JpaRepository<FamilyEntity, UUID> {
 }
 
 @Profile("!dev")
+@Repository
 class FamilyRepositoryJPA(private val familyJpaRepository: FamilyJpaRepository) : FamilyRepositoryCustom {
     override fun save(family: FamilyEntity) {
         familyJpaRepository.save(family)
+
     }
 
     override fun findById(id: UUID): Optional<FamilyEntity> {
@@ -41,6 +44,7 @@ class FamilyRepositoryJPA(private val familyJpaRepository: FamilyJpaRepository) 
 }
 
 @Profile("dev")
+@Repository
 class FamilyRepositoryInMemory : FamilyRepositoryCustom {
     private val families = mutableMapOf<UUID, FamilyEntity>()
 

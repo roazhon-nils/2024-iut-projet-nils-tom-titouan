@@ -1,13 +1,15 @@
 package iut.nantes.project.products.service
 
-import ProductEntity
-import iut.nantes.project.products.Exception.FamilyException
+import iut.nantes.project.products.entity.ProductEntity
+import iut.nantes.project.products.exception.FamilyException
 import iut.nantes.project.products.dto.ProductDto
 import iut.nantes.project.products.exception.ProductException
 import iut.nantes.project.products.repository.FamilyRepositoryCustom
 import iut.nantes.project.products.repository.ProductRepositoryCustom
+import org.springframework.stereotype.Service
 import java.util.*
 
+@Service
 class ProductService(
     private val familyRepository: FamilyRepositoryCustom,
     private val productRepository: ProductRepositoryCustom
@@ -28,8 +30,15 @@ class ProductService(
         return product.toDto()
     }
 
-    fun getAllProduct(): List<ProductDto> {
-        return productRepository.findAll().map { it.toDto() }
+    fun getAllProduct(familyName: String?, minPrice: Double?, maxPrice: Double?): List<ProductDto> {
+        val products = productRepository.findAll()  
+        return products
+            .filter { product ->
+                (familyName == null || product.family.name == familyName) &&
+                (minPrice == null || product.price.amount >= minPrice) &&
+                (maxPrice == null || product.price.amount <= maxPrice)
+            }
+            .map { it.toDto() }
     }
 
     fun getProductById(id: UUID): ProductDto {
