@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface ContactRepository : JpaRepository<ContactEntity, Long> {
-    fun findByCity(city: String): List<ContactEntity>
+    fun findByAddressCity(city: String): List<ContactEntity>
 }

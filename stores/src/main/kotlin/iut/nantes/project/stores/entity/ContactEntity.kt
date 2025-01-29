@@ -1,5 +1,7 @@
 package iut.nantes.project.stores.entity
 
+import iut.nantes.project.stores.dto.AddressDto
+import iut.nantes.project.stores.dto.ContactDto
 import jakarta.persistence.*
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.Pattern
@@ -10,7 +12,7 @@ import jakarta.validation.constraints.Size
 data class ContactEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Int? = null,
+    val id: Long? = null,
 
     @field:Email(message = "Email format is invalid")
     val email: String,
@@ -20,7 +22,9 @@ data class ContactEntity(
 
     @Embedded
     val address: AddressEntity
-)
+) {
+    fun toDto() = ContactDto(id, email, phone, address.toDto())
+}
 
 @Embeddable
 data class AddressEntity(
@@ -32,4 +36,6 @@ data class AddressEntity(
 
     @field:Pattern(regexp = "^[0-9]{5}$", message = "Postal code must be 5 digits")
     val postalCode: String
-)
+) {
+    fun toDto() = AddressDto(street, city, postalCode)
+}

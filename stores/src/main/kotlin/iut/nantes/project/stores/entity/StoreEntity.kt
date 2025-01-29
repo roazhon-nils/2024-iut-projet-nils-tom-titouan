@@ -1,8 +1,8 @@
 package iut.nantes.project.stores.entity
 
+import ProductEntity
 import jakarta.persistence.*
 import jakarta.validation.constraints.Size
-import java.util.*
 
 @Entity
 data class StoreEntity(
@@ -18,12 +18,4 @@ data class StoreEntity(
 
     @OneToMany
     val products: List<ProductEntity> = mutableListOf()
-)
-
-@Entity
-data class ProductEntity(
-    @Id
-    val id: UUID = UUID.randomUUID(),
-    val name: String,
-    var quantity: Int
 )

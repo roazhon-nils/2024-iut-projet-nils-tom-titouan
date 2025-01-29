@@ -1,34 +1,37 @@
 package iut.nantes.project.stores.controller
 
 import iut.nantes.project.stores.dto.ContactDto
-import org.springframework.http.ResponseEntity
+import iut.nantes.project.stores.service.ContactService
 import org.springframework.web.bind.annotation.*
 
 @RestController
-class ContactController {
-    @PostMapping("/api/v1/contacts")
-    fun createContact(@RequestBody contact: ContactDto): ResponseEntity<ContactDto> {
-        TODO()
+@RequestMapping("/api/v1/contacts")
+class ContactController(private val contactService: ContactService) {
+    @PostMapping
+    fun createContact(@RequestBody contactDTO: ContactDto): ContactDto {
+        return contactService.createContact(contactDTO)
     }
 
-    @GetMapping("/api/v1/contacts") // + filtre
-    fun getAllContacts(@PathVariable id: String): ResponseEntity<List<ContactDto>> {
-        TODO()
+    @GetMapping
+    fun getContactsByCity(@RequestParam city: String): List<ContactDto> {
+        return contactService.getContactsByCity(city)
     }
 
-    @GetMapping("/api/v1/contacts/{id}")
-    fun getContactById(@PathVariable id: String): ResponseEntity<ContactDto> {
-        TODO()
+    @GetMapping("/{id}")
+    fun getContactById(@PathVariable id: Long) : ContactDto {
+        return contactService.getContactById(id)
     }
 
-    @PutMapping("/api/v1/contacts/{id}")
-    fun updateContact(@PathVariable id: String, @RequestBody contact: ContactDto): ResponseEntity<ContactDto> {
-        TODO()
+    @PutMapping("/{id}")
+    fun updateContact(
+        @PathVariable id: Long,
+        @RequestBody contactDTO: ContactDto
+    ) : ContactDto {
+        return contactService.updateContact(id, contactDTO)
     }
 
-    @DeleteMapping("/api/v1/contacts/{id}")
-    fun deleteContactById(@PathVariable id: String): ResponseEntity<Void> {
-        TODO()
+    @DeleteMapping("/{id}")
+    fun deleteContact(@PathVariable id: Long) {
+        contactService.deleteContact(id)
     }
-
 }
