@@ -27,6 +27,6 @@ data class StoreEntity(
         for (product in products){
             productsD.add(product.toDto())
         }
-        return StoreDto(id, name, contact, productsD)
+        return StoreDto(id, name, contact.toDto(), productsD)
     }
 }
