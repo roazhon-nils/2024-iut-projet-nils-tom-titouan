@@ -1,42 +1,83 @@
 package iut.nantes.project.products.controller
 
 import iut.nantes.project.products.dto.FamilyDTO
+import iut.nantes.project.products.service.FamilyService
+import iut.nantes.project.products.exception.FamilyException
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-
+import java.util.UUID
 
 @RestController
-class FamilleController(){
+@RequestMapping("/api/v1")
+class FamilleController(
+    private val familyService: FamilyService
+) {
 
-    @PostMapping("/api/v1/families")
+    @PostMapping("/families")
     fun createfamily(@RequestBody family: FamilyDTO): ResponseEntity<FamilyDTO> {
-            TODO()
-//        val duplicate = db.findOne(family.name)
-//        if (duplicate != null) {
-//            return ResponseEntity.status(HttpStatus.CONFLICT).body(duplicate)
-//        }
-//        db.saveFamily(family).let {return ResponseEntity.status(HttpStatus.CREATED).body(it) }
-
+        return try {
+            val createdFamily = familyService.createFamily(family)
+            ResponseEntity.status(HttpStatus.CREATED).body(createdFamily)
+        } catch (e: FamilyException.NameConflictException) {
+            ResponseEntity.status(HttpStatus.CONFLICT).build()
+        } catch (e: FamilyException.InvalidDataException) {
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).build()
+        } catch (e: Exception) {
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
+        }
     }
 
-    @GetMapping("/api/v1/families")
+
+    @GetMapping("/families")
     fun getFamilies(): ResponseEntity<List<FamilyDTO>> {
-        TODO()
-        //return ResponseEntity.statuts(HttpStatus.OK).body(db.getFamilies())
+        return try {
+            val families = familyService.getAllFamilies()
+            ResponseEntity.status(HttpStatus.OK).body(families)
+        } catch (e: Exception) {
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
+        }
     }
 
-    @GetMapping("/api/v1/families/{id}")
-    fun getFamilyById(@PathVariable id: String): ResponseEntity<List<FamilyDTO>> {
-        TODO()
+    @GetMapping("/families/{id}")
+    fun getFamilyById(@PathVariable id: UUID): ResponseEntity<FamilyDTO> {
+        return try {
+            val family = familyService.getFamilyById(id)
+            ResponseEntity.status(HttpStatus.OK).body(family)
+        } catch (e: FamilyException.InvalidIdFormatException) {
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).build()
+        } catch (e: FamilyException.FamilyNotFoundException) {
+            ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+        } catch (e: Exception) {
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
+        }
     }
 
-    @PutMapping("/api/v1/families/{id}")
-    fun updateFamily(@PathVariable id: String, @RequestBody familyDto: FamilyDTO): ResponseEntity<FamilyDTO> {
-        TODO()
+    @PutMapping("/families/{id}")
+    fun updateFamily(@PathVariable id: UUID, @RequestBody familyDto: FamilyDTO): ResponseEntity<FamilyDTO> {
+        return try {
+            val updatedFamily = familyService.updateFamily(id, familyDto)
+            ResponseEntity.status(HttpStatus.OK).body(updatedFamily)
+        } catch (e: FamilyException.InvalidDataException) {
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).build()
+        } catch (e: FamilyException.NameConflictException) {
+            ResponseEntity.status(HttpStatus.CONFLICT).build()
+        } catch (e: Exception) {
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
+        }
     }
 
-    @DeleteMapping("/api/v1/families/{id}")
-    fun deleteFamily(@PathVariable id: String): ResponseEntity<Void> {
-        TODO()
+    @DeleteMapping("/families/{id}")
+    fun deleteFamily(@PathVariable id: UUID): ResponseEntity<Void> {
+        return try {
+            familyService.deleteFamily(id)
+            ResponseEntity.status(HttpStatus.NO_CONTENT).build()
+        } catch (e: FamilyException.FamilyNotFoundException) {
+            ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+        } catch (e: FamilyException.FamilyHasProductsException) {
+            ResponseEntity.status(HttpStatus.CONFLICT).build()
+        } catch (e: Exception) {
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
+        }
     }
 }
