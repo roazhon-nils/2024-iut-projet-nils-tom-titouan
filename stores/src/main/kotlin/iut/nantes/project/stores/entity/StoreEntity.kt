@@ -13,11 +13,11 @@ data class StoreEntity(
     val id: Long? = null,
 
     @field:Size(min = 3, max = 30, message = "Name must have at least 3 characters and max 30 characters")
-    val name: String,
+    var name: String,
 
     @ManyToOne
     @JoinColumn(name = "contact_id", referencedColumnName = "id")
-    val contact: ContactEntity,
+    var contact: ContactEntity,
 
     @OneToMany(mappedBy = "store", cascade = [CascadeType.ALL])
     val products: List<ProductEntity> = mutableListOf() /** Peut etre faire une autre classe pour Product **/
