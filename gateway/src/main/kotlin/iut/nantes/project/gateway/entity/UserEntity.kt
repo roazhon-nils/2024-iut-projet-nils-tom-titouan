@@ -1,4 +1,4 @@
-package iut.nantes.project.gateway.entity
+package iut.nantes.project.gateway.Entity
 
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
@@ -11,6 +11,5 @@ data class UserEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = 0,
     val login: String,
-    val password: String,
-    val isAdmin: Boolean
+    val password: String
 )

@@ -1,56 +1,49 @@
-package iut.nantes.project.products.service
+package iut.nantes.project.products
 
-import iut.nantes.project.products.entity.ProductEntity
-import iut.nantes.project.products.exception.FamilyException
-import iut.nantes.project.products.dto.ProductDto
-import iut.nantes.project.products.exception.ProductException
-import iut.nantes.project.products.repository.FamilyRepositoryCustom
-import iut.nantes.project.products.repository.ProductRepositoryCustom
-import org.springframework.stereotype.Service
+import iut.nantes.project.products.DTO.ProductDTO
+import iut.nantes.project.products.Exception.FamilyException
+import iut.nantes.project.products.Exception.ProductException
+import iut.nantes.project.products.Repository.FamilyRepository
+import iut.nantes.project.products.Repository.ProductRepository
+import iut.nantes.project.products.Service.WebProductService
 import java.util.*
 
-@Service
-class ProductService(
-    private val familyRepository: FamilyRepositoryCustom,
-    private val productRepository: ProductRepositoryCustom
-) {
-    fun createProduct(productDto: ProductDto): ProductDto {
-        val familyId = productDto.id ?: throw FamilyException.InvalidIdFormatException()
+class ProductService(private val productRepository: ProductRepository, private val familyRepository: FamilyRepository, private val webProductService: WebProductService) {
+
+    fun createProduct(productDto: ProductDTO): ProductDTO {
+        val familyId = productDto.family.id ?: throw FamilyException.InvalidIdFormatException()
         val family = familyRepository.findById(familyId)
             .orElseThrow { FamilyException.FamilyNotFoundException() }
 
-        val product = ProductEntity(
-            UUID.randomUUID(),
-            productDto.name,
-            productDto.description,
-            productDto.price.toEntity(),
-            family
-        )
+        val product = ProductEntity(UUID.randomUUID(), productDto.name, productDto.description, productDto.price.toEntity(), family)
         productRepository.save(product)
         return product.toDto()
     }
 
-    fun getAllProduct(familyName: String?, minPrice: Double?, maxPrice: Double?): List<ProductDto> {
-        val products = productRepository.findAll()  
-        return products
-            .filter { product ->
-                (familyName == null || product.family.name == familyName) &&
-                (minPrice == null || product.price.amount >= minPrice) &&
-                (maxPrice == null || product.price.amount <= maxPrice)
-            }
-            .map { it.toDto() }
+    fun getAllProducts(familyName: String?, minPrice: Double?, maxPrice: Double?): List<ProductDTO> {
+        if (minPrice != null && maxPrice != null && minPrice >= maxPrice) {
+            throw IllegalArgumentException("minPrice must be smaller than maxPrice")
+        }
+
+        val products = productRepository.findAll().filter {
+            (familyName == null || it.family.name == familyName) &&
+                    (minPrice == null || it.price.amount >= minPrice) &&
+                    (maxPrice == null || it.price.amount <= maxPrice)
+        }
+        return products.map { it.toDto() }
     }
 
-    fun getProductById(id: UUID): ProductDto {
-        return productRepository.findById(id.toString())
-            .orElseThrow { ProductException.ProductNotFoundException() }.toDto()
+    fun getProductById(id: UUID): ProductDTO {
+        val product = productRepository.findById(id.toString())
+            .orElseThrow { ProductException.ProductNotFoundException() }
+        return product.toDto()
     }
 
-    fun updateProduct(id: UUID, productDto: ProductDto): ProductDto {
+    fun updateProduct(id: UUID, productDto: ProductDTO): ProductDTO {
         val product = productRepository.findById(id.toString())
             .orElseThrow { ProductException.ProductNotFoundException() }
 
-        val familyId = productDto.famille.id ?: throw FamilyException.InvalidIdFormatException()
+        val familyId = productDto.family.id ?: throw FamilyException.InvalidIdFormatException()
         val family = familyRepository.findById(familyId)
             .orElseThrow { FamilyException.FamilyNotFoundException() }
 
@@ -64,6 +57,19 @@ class ProductService(
     }
 
     fun deleteProduct(id: UUID) {
-        productRepository.delete(id)
+        val product = productRepository.findById(id.toString())
+            .orElseThrow { ProductException.ProductNotFoundException() }
+
+        if (productHasStock(product)) {
+            throw ProductException.ProductHasStockException()
+        }
+
+        productRepository.delete(product)
     }
+
+    private fun productHasStock(product: ProductEntity): Boolean {
+        return webProductService.isProductOnStore(product.id)
+    }
+
+
 }

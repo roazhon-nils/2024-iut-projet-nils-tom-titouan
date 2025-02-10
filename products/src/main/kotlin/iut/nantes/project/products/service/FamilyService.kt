@@ -1,14 +1,13 @@
-package iut.nantes.project.products.service
+package iut.nantes.project.products.Service
 
-import iut.nantes.project.products.entity.FamilyEntity
-import iut.nantes.project.products.exception.FamilyException
-import iut.nantes.project.products.dto.FamilyDTO
-import iut.nantes.project.products.repository.FamilyRepositoryCustom
-import org.springframework.stereotype.Service
+import iut.nantes.project.products.DTO.FamilyDTO
+import iut.nantes.project.products.Exception.FamilyException
+import iut.nantes.project.products.FamilyEntity
+import iut.nantes.project.products.Repository.FamilyRepository
 import java.util.*
 
-@Service
-class FamilyService(private val familyRepository: FamilyRepositoryCustom) {
+class FamilyService(private val familyRepository: FamilyRepository) {
+
     fun createFamily(familyDto: FamilyDTO): FamilyDTO {
         if (familyRepository.existsByName(familyDto.name)) {
             throw FamilyException.NameConflictException()
@@ -23,9 +22,12 @@ class FamilyService(private val familyRepository: FamilyRepositoryCustom) {
     }
 
     fun getFamilyById(id: UUID): FamilyDTO {
-        return familyRepository.findById(id)
-            .orElseThrow { FamilyException.FamilyNotFoundException() }.toDto()
+        val family = familyRepository.findById(id)
+            .orElseThrow { FamilyException.FamilyNotFoundException() }
+
+        return family.toDto()
     }
+
 
     fun updateFamily(id: UUID, familyDto: FamilyDTO): FamilyDTO {
         val family = familyRepository.findById(id).orElseThrow { FamilyException.FamilyNotFoundException() }

@@ -24,7 +24,13 @@ dependencies {
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 
-	implementation("org.springframework.boot:spring-boot-starter-security")
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	implementation("com.h2database:h2")
+
+	implementation("org.springframework.boot:spring-boot-starter-validation")
+
+
+
 	implementation("org.springframework.boot:spring-boot-starter-webflux")
 
 	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
@@ -33,9 +39,12 @@ dependencies {
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
 	testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.28.1")
-    testImplementation("io.mockk:mockk:1.13.12")
-    testImplementation("com.ninja-squad:springmockk:4.0.2")
-	testImplementation("org.junit.jupiter:junit-jupiter")
+	testImplementation("io.mockk:mockk:1.13.12")
+	testImplementation("com.ninja-squad:springmockk:4.0.2")
+
+	testImplementation ("org.mockito:mockito-core")
+	testImplementation ("org.mockito.kotlin:mockito-kotlin:4.0.0")
+
 
 	implementation("io.github.oshai:kotlin-logging-jvm:7.0.3")
 	implementation("jakarta.persistence:jakarta.persistence-api:3.1.0")

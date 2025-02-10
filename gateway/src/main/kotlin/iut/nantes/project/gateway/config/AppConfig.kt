@@ -1,7 +1,7 @@
-package iut.nantes.project.gateway.config
+package iut.nantes.project.gateway.Config
 
-import iut.nantes.project.gateway.repository.UserRepository
-import iut.nantes.project.gateway.service.UserService
+import iut.nantes.project.gateway.Repository.UserRepository
+import iut.nantes.project.gateway.Service.UserService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -9,5 +9,9 @@ import org.springframework.context.annotation.Configuration
 class AppConfig {
 
     @Bean
-    fun userService(userRepository: UserRepository) = UserService(userRepository)
+    fun userService(userRepository: UserRepository): UserService {
+        return UserService(userRepository)
+    }
+
+
 }

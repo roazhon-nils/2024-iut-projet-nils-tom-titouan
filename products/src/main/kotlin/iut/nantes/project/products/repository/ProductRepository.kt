@@ -1,32 +1,29 @@
-package iut.nantes.project.products.repository
+package iut.nantes.project.products.Repository
 
-import iut.nantes.project.products.entity.ProductEntity
-import org.springframework.context.annotation.Profile
+import iut.nantes.project.products.ProductEntity
 import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.stereotype.Repository
 import java.util.*
 
-interface ProductRepositoryCustom {
-    fun save(productEntity: ProductEntity)
+interface ProductRepository {
+    fun save(product: ProductEntity)
     fun findById(id: String): Optional<ProductEntity>
     fun findAll(): List<ProductEntity>
     fun existsByName(name: String): Boolean
-    fun delete(id: UUID)
+    fun delete(product: ProductEntity)
 }
 
 interface ProductJpaRepository : JpaRepository<ProductEntity, UUID> {
     fun existsByName(name: String): Boolean
 }
 
-@Profile("!dev")
-@Repository
-class ProductRepositoryJPA(private val productJpaRepository: ProductJpaRepository) : ProductRepositoryCustom {
-    override fun save(productEntity: ProductEntity) {
-        productJpaRepository.save(productEntity)
+class ProductRepositoryJPA(private val productJpaRepository: ProductJpaRepository) : ProductRepository {
+    override fun save(product: ProductEntity) {
+        productJpaRepository.save(product)
     }
 
     override fun findById(id: String): Optional<ProductEntity> {
-        return productJpaRepository.findById(UUID.fromString(id))
+        val uuid = UUID.fromString(id)
+        return productJpaRepository.findById(uuid)
     }
 
     override fun findAll(): List<ProductEntity> {
@@ -37,36 +34,7 @@ class ProductRepositoryJPA(private val productJpaRepository: ProductJpaRepositor
         return productJpaRepository.existsByName(name)
     }
 
-    override fun delete(id: UUID) {
-        productJpaRepository.deleteById(id)
-    }
-}
-
-@Profile("dev")
-@Repository
-class ProductRepositoryInMemory : ProductRepositoryCustom {
-    private val products = mutableMapOf<UUID, ProductEntity>()
-    override fun save(productEntity: ProductEntity) {
-        products[productEntity.id] = productEntity
-    }
-
-    override fun findById(id: String): Optional<ProductEntity> {
-        return try {
-            Optional.ofNullable(products[UUID.fromString(id)])
-        } catch (e: IllegalArgumentException) {
-            throw IllegalArgumentException("L'identifiant fourni n'est pas un UUID valide")
-        }
-    }
-
-    override fun findAll(): List<ProductEntity> {
-        return products.values.toList()
-    }
-
-    override fun existsByName(name: String): Boolean {
-        return products.values.any { it.name == name }
-    }
-
-    override fun delete(id: UUID) {
-        products.remove(id)
+    override fun delete(product: ProductEntity) {
+        productJpaRepository.delete(product)
     }
 }

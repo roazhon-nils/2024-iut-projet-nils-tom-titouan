@@ -1,12 +1,10 @@
-package iut.nantes.project.products.repository
+package iut.nantes.project.products.Repository
 
-import iut.nantes.project.products.entity.FamilyEntity
-import org.springframework.context.annotation.Profile
+import iut.nantes.project.products.FamilyEntity
 import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.stereotype.Repository
 import java.util.*
 
-interface FamilyRepositoryCustom {
+interface FamilyRepository {
     fun save(family: FamilyEntity)
     fun findById(id: UUID): Optional<FamilyEntity>
     fun findAll(): List<FamilyEntity>
@@ -18,12 +16,10 @@ interface FamilyJpaRepository : JpaRepository<FamilyEntity, UUID> {
     fun existsByName(name: String): Boolean
 }
 
-@Profile("!dev")
-@Repository
-class FamilyRepositoryJPA(private val familyJpaRepository: FamilyJpaRepository) : FamilyRepositoryCustom {
+
+class FamilyRepositoryJPA(private val familyJpaRepository: FamilyJpaRepository) : FamilyRepository {
     override fun save(family: FamilyEntity) {
         familyJpaRepository.save(family)
-
     }
 
     override fun findById(id: UUID): Optional<FamilyEntity> {
@@ -40,31 +36,5 @@ class FamilyRepositoryJPA(private val familyJpaRepository: FamilyJpaRepository) 
 
     override fun delete(family: FamilyEntity) {
         familyJpaRepository.delete(family)
-    }
-}
-
-@Profile("dev")
-@Repository
-class FamilyRepositoryInMemory : FamilyRepositoryCustom {
-    private val families = mutableMapOf<UUID, FamilyEntity>()
-
-    override fun save(family: FamilyEntity) {
-        families[family.id] = family
-    }
-
-    override fun findById(id: UUID): Optional<FamilyEntity> {
-        return Optional.ofNullable(families[id])
-    }
-
-    override fun findAll(): List<FamilyEntity> {
-        return families.values.toList()
-    }
-
-    override fun existsByName(name: String): Boolean {
-        return families.values.any { it.name == name }
-    }
-
-    override fun delete(family: FamilyEntity) {
-        families.remove(family.id)
     }
 }
